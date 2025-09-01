@@ -13,8 +13,7 @@
             "x": 0,
             "y": 0
           },
-          "nodeIndex": "Query1",
-          "nodeLineageTag": "5b74c62e-8b6b-429f-bc4d-2f9edd61ee2c",
+          "nodeIndex": "ExchangeRateDB",
           "size": {
             "height": 200,
             "width": 234

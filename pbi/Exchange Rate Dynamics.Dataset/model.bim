@@ -4,7 +4,7 @@
     "annotations": [
       {
         "name": "PBI_QueryOrder",
-        "value": "[\"Query1\"]"
+        "value": "[\"ExchangeRateDB\"]"
       },
       {
         "name": "__PBI_TimeIntelligenceEnabled",
@@ -40,12 +40,12 @@
     "defaultPowerBIDataSourceVersion": "powerBI_V3",
     "relationships": [
       {
-        "name": "e7b0113f-4a7e-4a57-ba29-9870196abda1",
-        "fromColumn": "Column2",
-        "fromTable": "Query1",
+        "name": "9760e1b8-c7dc-444c-9e45-4645e9da0e42",
+        "fromColumn": "Date",
+        "fromTable": "ExchangeRateDB",
         "joinOnDateBehavior": "datePartOnly",
         "toColumn": "Date",
-        "toTable": "LocalDateTable_161f32ff-230d-4473-9882-c4bd9dba12f6"
+        "toTable": "LocalDateTable_0ba33785-1e95-4785-ada3-4f45cf70c5eb"
       }
     ],
     "sourceQueryCulture": "en-US",
@@ -268,7 +268,7 @@
         ]
       },
       {
-        "name": "Query1",
+        "name": "ExchangeRateDB",
         "annotations": [
           {
             "name": "PBI_NavigationStepName",
@@ -281,91 +281,52 @@
         ],
         "columns": [
           {
-            "name": "Column1",
+            "name": "Date",
             "annotations": [
               {
                 "name": "SummarizationSetBy",
                 "value": "Automatic"
-              }
-            ],
-            "dataType": "string",
-            "lineageTag": "1103091c-c33a-4ae1-8c0f-7e97e7817c33",
-            "sourceColumn": "Column1",
-            "summarizeBy": "none"
-          },
-          {
-            "name": "Column2",
-            "annotations": [
-              {
-                "name": "SummarizationSetBy",
-                "value": "Automatic"
-              },
-              {
-                "name": "UnderlyingDateTimeDataType",
-                "value": "Date"
               }
             ],
             "dataType": "dateTime",
-            "formatString": "Long Date",
-            "lineageTag": "99d33bba-5f92-4557-93d7-62c82f06f317",
-            "sourceColumn": "Column2",
+            "formatString": "General Date",
+            "lineageTag": "3437dd18-79ed-4300-827b-a2c4ad5bb370",
+            "sourceColumn": "Date",
             "summarizeBy": "none",
             "variations": [
               {
                 "name": "Variation",
                 "defaultHierarchy": {
                   "hierarchy": "Date Hierarchy",
-                  "table": "LocalDateTable_161f32ff-230d-4473-9882-c4bd9dba12f6"
+                  "table": "LocalDateTable_0ba33785-1e95-4785-ada3-4f45cf70c5eb"
                 },
                 "isDefault": true,
-                "relationship": "e7b0113f-4a7e-4a57-ba29-9870196abda1"
+                "relationship": "9760e1b8-c7dc-444c-9e45-4645e9da0e42"
               }
             ]
           },
           {
-            "name": "Column3",
+            "name": "Close",
             "annotations": [
               {
                 "name": "SummarizationSetBy",
                 "value": "Automatic"
-              }
-            ],
-            "dataType": "string",
-            "lineageTag": "324ed723-d35b-44b3-a2d2-efddfd826244",
-            "sourceColumn": "Column3",
-            "summarizeBy": "none"
-          },
-          {
-            "name": "Column4",
-            "annotations": [
+              },
               {
-                "name": "SummarizationSetBy",
-                "value": "Automatic"
+                "name": "PBI_FormatHint",
+                "value": "{\"isGeneralNumber\":true}"
               }
             ],
-            "dataType": "string",
-            "lineageTag": "14ce9b1b-1eca-4575-9445-5dc96f44a021",
-            "sourceColumn": "Column4",
-            "summarizeBy": "none"
-          },
-          {
-            "name": "Column5",
-            "annotations": [
-              {
-                "name": "SummarizationSetBy",
-                "value": "Automatic"
-              }
-            ],
-            "dataType": "string",
-            "lineageTag": "b5c3ba7d-a8fd-4f63-8e47-1c3672119402",
-            "sourceColumn": "Column5",
-            "summarizeBy": "none"
+            "dataType": "double",
+            "lineageTag": "3821a8ba-212d-4629-bb92-7e3a28a94365",
+            "sourceColumn": "Close",
+            "summarizeBy": "sum"
           }
         ],
         "lineageTag": "5b74c62e-8b6b-429f-bc4d-2f9edd61ee2c",
         "partitions": [
           {
-            "name": "Query1",
+            "name": "ExchangeRateDB",
             "mode": "import",
             "source": {
               "expression": [
@@ -374,9 +335,12 @@
                 "    #\"Filtered Rows\" = Table.SelectRows(Source, each ([Name] = \"EURRON_autoupdate.xlsx\")),",
                 "    #\"EURRON_autoupdate xlsx_https://netorgft14390111 sharepoint com/sites/HessianAnalyticsData/Shared Documents/Raw data/exchange-rate-raw/\" = #\"Filtered Rows\"{[Name=\"EURRON_autoupdate.xlsx\",#\"Folder Path\"=\"https://netorgft14390111.sharepoint.com/sites/HessianAnalyticsData/Shared Documents/Raw data/exchange-rate-raw/\"]}[Content],",
                 "    #\"Imported Excel Workbook\" = Excel.Workbook(#\"EURRON_autoupdate xlsx_https://netorgft14390111 sharepoint com/sites/HessianAnalyticsData/Shared Documents/Raw data/exchange-rate-raw/\"),",
-                "    Sheet1_Sheet = #\"Imported Excel Workbook\"{[Item=\"Sheet1\",Kind=\"Sheet\"]}[Data]",
+                "    Sheet1_Sheet = #\"Imported Excel Workbook\"{[Item=\"Sheet1\",Kind=\"Sheet\"]}[Data],",
+                "    #\"Removed Columns\" = Table.RemoveColumns(Sheet1_Sheet,{\"Column1\", \"Column2\", \"Column3\"}),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(#\"Removed Columns\", [PromoteAllScalars=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\",{{\"Date\", type datetime}, {\"Close\", type number}})",
                 "in",
-                "    Sheet1_Sheet"
+                "    #\"Changed Type\""
               ],
               "type": "m"
             }
@@ -384,7 +348,7 @@
         ]
       },
       {
-        "name": "LocalDateTable_161f32ff-230d-4473-9882-c4bd9dba12f6",
+        "name": "LocalDateTable_0ba33785-1e95-4785-ada3-4f45cf70c5eb",
         "annotations": [
           {
             "name": "__PBI_LocalDateTable",
@@ -406,7 +370,7 @@
             "isDataTypeInferred": true,
             "isHidden": true,
             "isNameInferred": true,
-            "lineageTag": "800db335-0c8b-497c-8a9c-d8fba850253a",
+            "lineageTag": "689ee75e-345d-4b2b-8261-ed29a5df4691",
             "sourceColumn": "[Date]",
             "summarizeBy": "none",
             "type": "calculatedTableColumn"
@@ -429,7 +393,7 @@
             "formatString": "0",
             "isDataTypeInferred": true,
             "isHidden": true,
-            "lineageTag": "2d79986e-2a5b-46ae-af81-7f0c5754b9df",
+            "lineageTag": "9db827bb-4bdb-47ba-9b63-883206702bdf",
             "summarizeBy": "none",
             "type": "calculated"
           },
@@ -451,7 +415,7 @@
             "formatString": "0",
             "isDataTypeInferred": true,
             "isHidden": true,
-            "lineageTag": "45d057dd-e148-4f6e-9427-4dd9e30b74e7",
+            "lineageTag": "5aa9c4ca-5d65-4cd0-83f0-da5929d14a91",
             "summarizeBy": "none",
             "type": "calculated"
           },
@@ -472,7 +436,7 @@
             "expression": "FORMAT([Date], \"MMMM\")",
             "isDataTypeInferred": true,
             "isHidden": true,
-            "lineageTag": "bac07455-860c-4d15-8a34-c36e638af978",
+            "lineageTag": "b87b4c6f-20fa-421c-9e63-299969141e58",
             "sortByColumn": "MonthNo",
             "summarizeBy": "none",
             "type": "calculated"
@@ -495,7 +459,7 @@
             "formatString": "0",
             "isDataTypeInferred": true,
             "isHidden": true,
-            "lineageTag": "c9fa87b6-66f0-46a3-a2bb-522c69201da6",
+            "lineageTag": "70519159-a6ee-4ca4-ae83-d0424359639c",
             "summarizeBy": "none",
             "type": "calculated"
           },
@@ -516,7 +480,7 @@
             "expression": "\"Qtr \" & [QuarterNo]",
             "isDataTypeInferred": true,
             "isHidden": true,
-            "lineageTag": "0f1ea223-d1dc-462c-96f5-05f75206aa31",
+            "lineageTag": "24e3d465-2412-4be4-b192-947df75e3abf",
             "sortByColumn": "QuarterNo",
             "summarizeBy": "none",
             "type": "calculated"
@@ -539,7 +503,7 @@
             "formatString": "0",
             "isDataTypeInferred": true,
             "isHidden": true,
-            "lineageTag": "1a9c1515-1128-48fe-a391-e37763bff9ee",
+            "lineageTag": "00de6513-3cab-40a3-b5a6-b3d6de7b6f94",
             "summarizeBy": "none",
             "type": "calculated"
           }
@@ -557,39 +521,39 @@
               {
                 "name": "Year",
                 "column": "Year",
-                "lineageTag": "9a8c0cee-f7e6-4cb0-8d0d-600e42829caa",
+                "lineageTag": "f309730d-7244-4289-a81b-3b975f17ec4f",
                 "ordinal": 0
               },
               {
                 "name": "Quarter",
                 "column": "Quarter",
-                "lineageTag": "8bb8feab-5bac-40c5-bb2c-2e746ce1c769",
+                "lineageTag": "ee6e0259-a52c-4468-b9a7-95010d339e4d",
                 "ordinal": 1
               },
               {
                 "name": "Month",
                 "column": "Month",
-                "lineageTag": "335e3e90-a765-4f4f-a0bb-6ffafde877cc",
+                "lineageTag": "0007f4e8-8522-47ae-b381-55eb12e789a7",
                 "ordinal": 2
               },
               {
                 "name": "Day",
                 "column": "Day",
-                "lineageTag": "a2ed3f80-43e6-4bf6-9efd-b7fc9a0ad115",
+                "lineageTag": "bca046d5-c288-45b9-ab3f-7406cd23b11a",
                 "ordinal": 3
               }
             ],
-            "lineageTag": "a673ee6e-f10c-41f2-bbc1-67bad3806efb"
+            "lineageTag": "146c0dd2-090d-4521-99e7-358c73d354c2"
           }
         ],
         "isHidden": true,
-        "lineageTag": "f0c7aaa7-e06a-4dad-948d-9b04fd26543a",
+        "lineageTag": "13575f1c-2c52-4b5d-8cb3-e74ae2526c5d",
         "partitions": [
           {
-            "name": "LocalDateTable_161f32ff-230d-4473-9882-c4bd9dba12f6",
+            "name": "LocalDateTable_0ba33785-1e95-4785-ada3-4f45cf70c5eb",
             "mode": "import",
             "source": {
-              "expression": "Calendar(Date(Year(MIN('Query1'[Column2])), 1, 1), Date(Year(MAX('Query1'[Column2])), 12, 31))",
+              "expression": "Calendar(Date(Year(MIN('ExchangeRateDB'[Date])), 1, 1), Date(Year(MAX('ExchangeRateDB'[Date])), 12, 31))",
               "type": "calculated"
             }
           }
